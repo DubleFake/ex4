@@ -1,13 +1,19 @@
 package back;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.AlgorithmParameters;
 import java.security.MessageDigest;
 import java.util.Base64;
 
 import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -25,8 +31,45 @@ public class Security {
 		return get_SHA_512_SecurePassword(target);
 		
 	}
+	
+	public static void encrypt(InputStream is, OutputStream os) throws Throwable {
+		encryptOrDecrypt(secret, Cipher.ENCRYPT_MODE, is, os);
+	}
 
-	public static final String encrypt(String target) throws Exception {
+	public static void decrypt(InputStream is, OutputStream os) throws Throwable {
+		encryptOrDecrypt(secret, Cipher.DECRYPT_MODE, is, os);
+	}
+
+	public static void encryptOrDecrypt(String key, int mode, InputStream is, OutputStream os) throws Throwable {
+
+		DESKeySpec dks = new DESKeySpec(key.getBytes());
+		SecretKeyFactory skf = SecretKeyFactory.getInstance("DES");
+		SecretKey desKey = skf.generateSecret(dks);
+		Cipher cipher = Cipher.getInstance("DES"); // DES/ECB/PKCS5Padding for SunJCE
+
+		if (mode == Cipher.ENCRYPT_MODE) {
+			cipher.init(Cipher.ENCRYPT_MODE, desKey);
+			CipherInputStream cis = new CipherInputStream(is, cipher);
+			doCopy(cis, os);
+		} else if (mode == Cipher.DECRYPT_MODE) {
+			cipher.init(Cipher.DECRYPT_MODE, desKey);
+			CipherOutputStream cos = new CipherOutputStream(os, cipher);
+			doCopy(is, cos);
+		}
+	}
+
+	public static void doCopy(InputStream is, OutputStream os) throws IOException {
+		byte[] bytes = new byte[64];
+		int numBytes;
+		while ((numBytes = is.read(bytes)) != -1) {
+			os.write(bytes, 0, numBytes);
+		}
+		os.flush();
+		os.close();
+		is.close();
+	}
+
+	public static final String encryptText(String target) throws Exception {
 		
 		SecretKeySpec key = createSecretKey(secret.toCharArray(), salt2, iterationCount, keyLength);
 		
@@ -40,7 +83,7 @@ public class Security {
 		
 	}
 	
-	public static final String decrypt(String target) throws Exception {
+	public static final String decryptText(String target) throws Exception {
 		
 		SecretKeySpec key = createSecretKey(secret.toCharArray(), salt2, iterationCount, keyLength);
 		

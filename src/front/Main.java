@@ -1,17 +1,21 @@
 package front;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
 import java.awt.Font;
-import javax.swing.SwingConstants;
-import javax.swing.JList;
-import javax.swing.JScrollPane;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+
 import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+
+import back.Security;
 
 public class Main extends JFrame {
 
@@ -24,10 +28,16 @@ public class Main extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					Security.encrypt(new FileInputStream("test.txt"), new FileOutputStream("test.encrypted"));
+					new File("test.txt").delete();
+					Security.decrypt(new FileInputStream("test.encrypted"), new FileOutputStream("test2.txt"));
+					new File("test.encrypted").delete();
 					Main frame = new Main();
 					frame.setTitle("Passworder");
 					frame.setVisible(true);
 				} catch (Exception e) {
+					e.printStackTrace();
+				} catch (Throwable e) {
 					e.printStackTrace();
 				}
 			}
