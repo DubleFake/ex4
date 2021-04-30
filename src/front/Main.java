@@ -45,16 +45,31 @@ public class Main extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
+		JButton logoutButton = new JButton("Log out");
+		logoutButton.addActionListener(e -> {
+			
+			Login f = new Login();
+			f.setTitle("Log in");
+			f.setResizable(false);
+			f.setLocationRelativeTo(null);
+			this.setVisible(false);
+			f.setVisible(true);
+			
+		});
+		logoutButton.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
+		logoutButton.setBounds(670, 10, 103, 23);
+		contentPane.add(logoutButton);
+		
 		JLabel lblNewLabel = new JLabel("Password'er");
+		lblNewLabel.setBounds(10, 11, 764, 43);
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("Trebuchet MS", Font.PLAIN, 22));
-		lblNewLabel.setBounds(10, 11, 764, 43);
 		contentPane.add(lblNewLabel);
 		
 		JLabel lblNewLabel_1 = new JLabel("Password list");
+		lblNewLabel_1.setBounds(10, 65, 764, 24);
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_1.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
-		lblNewLabel_1.setBounds(10, 65, 764, 24);
 		contentPane.add(lblNewLabel_1);
 		
 		JScrollPane scrollPane = new JScrollPane();
@@ -65,18 +80,18 @@ public class Main extends JFrame {
 		scrollPane.setViewportView(list);
 		
 		JButton btnNewButton = new JButton("Delete password");
-		btnNewButton.setFont(new Font("Trebuchet MS", Font.PLAIN, 12));
 		btnNewButton.setBounds(482, 264, 138, 23);
+		btnNewButton.setFont(new Font("Trebuchet MS", Font.PLAIN, 12));
 		contentPane.add(btnNewButton);
 		
 		JButton btnClearPasswords = new JButton("Clear password list");
-		btnClearPasswords.setFont(new Font("Trebuchet MS", Font.PLAIN, 12));
 		btnClearPasswords.setBounds(630, 264, 144, 23);
+		btnClearPasswords.setFont(new Font("Trebuchet MS", Font.PLAIN, 12));
 		contentPane.add(btnClearPasswords);
 		
 		JButton btnAddPassword = new JButton("Add password");
-		btnAddPassword.setFont(new Font("Trebuchet MS", Font.PLAIN, 12));
 		btnAddPassword.setBounds(10, 264, 138, 23);
+		btnAddPassword.setFont(new Font("Trebuchet MS", Font.PLAIN, 12));
 		contentPane.add(btnAddPassword);
 	}
 }
