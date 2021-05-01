@@ -1,10 +1,10 @@
 package front;
 
-import java.awt.EventQueue;
 import java.awt.Font;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -15,38 +15,19 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import back.Security;
-
 public class Main extends JFrame {
 
 	private JPanel contentPane;
+	private static boolean isPasswordWindowOpen = false;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Security.encrypt(new FileInputStream("test.txt"), new FileOutputStream("test.encrypted"));
-					new File("test.txt").delete();
-					Security.decrypt(new FileInputStream("test.encrypted"), new FileOutputStream("test2.txt"));
-					new File("test.encrypted").delete();
-					Main frame = new Main();
-					frame.setTitle("Passworder");
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				} catch (Throwable e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the frame.
 	 */
+	
 	public Main() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 800, 600);
@@ -62,8 +43,8 @@ public class Main extends JFrame {
 			f.setTitle("Log in");
 			f.setResizable(false);
 			f.setLocationRelativeTo(null);
-			this.setVisible(false);
 			f.setVisible(true);
+			this.setVisible(false);
 			
 		});
 		logoutButton.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
@@ -100,8 +81,44 @@ public class Main extends JFrame {
 		contentPane.add(btnClearPasswords);
 		
 		JButton btnAddPassword = new JButton("Add password");
+		btnAddPassword.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				if(!isPasswordWindowOpen) {
+					
+					AddPassword f = new AddPassword();
+					f.addWindowListener(new WindowAdapter() {
+						
+						public void windowClosing(WindowEvent e) {
+							
+							Main.toogleWindowOpenStatus(false);
+							
+						}
+						
+					});
+					f.setTitle("Add password");
+					f.setResizable(false);
+					f.setLocationRelativeTo(null);
+					f.setVisible(true);
+					isPasswordWindowOpen = true;
+				}
+				
+			}
+		});
 		btnAddPassword.setBounds(10, 264, 138, 23);
 		btnAddPassword.setFont(new Font("Trebuchet MS", Font.PLAIN, 12));
 		contentPane.add(btnAddPassword);
+	}
+	
+	public static void toogleWindowOpenStatus(boolean b) {
+		
+			isPasswordWindowOpen = b;
+		
+	}
+	
+	private void toggleWindow(boolean b) {
+		
+		this.setVisible(b);
+		
 	}
 }

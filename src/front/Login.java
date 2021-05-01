@@ -7,11 +7,16 @@ import java.awt.Font;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+
+import back.ProfileManager;
+import back.Tools;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JButton;
@@ -22,7 +27,8 @@ public class Login extends JFrame {
 	private JTextField usernameTextField;
 	private JPasswordField passwordField;
 	private static Login frame;
-
+	private boolean charsShown = false;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -35,6 +41,7 @@ public class Login extends JFrame {
 					frame.setResizable(false);
 					frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -52,6 +59,32 @@ public class Login extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		
+		JLabel showHidePassword = new JLabel("v-v");
+		showHidePassword.addMouseListener(new MouseAdapter() {
+			
+			public void mouseClicked(MouseEvent e) {
+				
+				if(charsShown) {
+					passwordField.setEchoChar('*');
+					showHidePassword.setText("v-v");
+
+				}
+				else {
+					passwordField.setEchoChar((char)0);
+					showHidePassword.setText("O-O");
+					
+				}
+				charsShown = !charsShown;
+			}
+			
+		});
+		showHidePassword.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		showHidePassword.setBackground(Color.WHITE);
+		showHidePassword.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
+		showHidePassword.setHorizontalAlignment(SwingConstants.CENTER);
+		showHidePassword.setBounds(291, 81, 33, 19);
+		contentPane.add(showHidePassword);
 		
 		JLabel logInlabel = new JLabel("Log in");
 		logInlabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -79,6 +112,7 @@ public class Login extends JFrame {
 		passwordField.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
 		passwordField.setColumns(10);
 		passwordField.setBounds(102, 82, 189, 19);
+		passwordField.setEchoChar('*');
 		contentPane.add(passwordField);
 		
 		JLabel message = new JLabel("Don't have an account?");
@@ -102,12 +136,13 @@ public class Login extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				
+				
 				Register f = new Register();
 				f.setTitle("Register");
 				f.setResizable(false);
 				f.setLocationRelativeTo(null);
-				frame.setVisible(false);
 				f.setVisible(true);
+				toggleVisibility(false);
 				
 			}
 		});
@@ -119,16 +154,27 @@ public class Login extends JFrame {
 		JButton logInButton = new JButton("Log in");
 		logInButton.addActionListener(e -> {
 			
+			if(ProfileManager.loadUser(usernameTextField.getText(), Tools.stringBuilder(passwordField.getPassword()))) {
 			Main f = new Main();
 			f.setTitle("Passworder");
 			f.setLocationRelativeTo(null);
 			f.setResizable(false);
-			frame.setVisible(false);
 			f.setVisible(true);
+			toggleVisibility(false);
+			}else {
+				
+				JOptionPane.showMessageDialog(null, "Username or password is incorrect.");
+				
+			}
 			
 		});
 		logInButton.setFont(new Font("Trebuchet MS", Font.PLAIN, 12));
 		logInButton.setBounds(102, 116, 99, 23);
 		contentPane.add(logInButton);
 	}
+	
+	private void toggleVisibility(Boolean b) {
+		
+		this.setVisible(b);
+	}	
 }

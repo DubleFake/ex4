@@ -1,5 +1,7 @@
 package front;
 
+import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -9,7 +11,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
 
@@ -18,33 +24,72 @@ public class Register extends JFrame {
 	private JPanel contentPane;
 	private JTextField usernameTextField;
 	private JPasswordField passwordField;
-	private JTextField emailTextField;
 	private JPasswordField repeatPasswordField;
-	
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Register frame = new Register();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-	
+	private boolean charsShown = false;
+	private boolean charsShown1 = false;
 	/**
 	 * Create the panel.
 	 */
 	public Register() {
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 354, 261);
+		setBounds(100, 100, 386, 236);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		
+		JLabel showHidePassword = new JLabel("v-v");
+		showHidePassword.addMouseListener(new MouseAdapter() {
+			
+			public void mouseClicked(MouseEvent e) {
+				
+				if(charsShown) {
+					repeatPasswordField.setEchoChar('*');
+					showHidePassword.setText("v-v");
+
+				}
+				else {
+					repeatPasswordField.setEchoChar((char)0);
+					showHidePassword.setText("O-O");
+					
+				}
+				charsShown = !charsShown;
+			}
+			
+		});
+		showHidePassword.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		showHidePassword.setBackground(Color.WHITE);
+		showHidePassword.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
+		showHidePassword.setHorizontalAlignment(SwingConstants.CENTER);
+		showHidePassword.setBounds(329, 79, 33, 19);
+		contentPane.add(showHidePassword);
+		
+		JLabel showHidePassword_1 = new JLabel("v-v");
+		showHidePassword_1.addMouseListener(new MouseAdapter() {
+			
+			public void mouseClicked(MouseEvent e) {
+				
+				if(charsShown1) {
+					passwordField.setEchoChar('*');
+					showHidePassword_1.setText("v-v");
+
+				}
+				else {
+					passwordField.setEchoChar((char)0);
+					showHidePassword_1.setText("O-O");
+					
+				}
+				charsShown1 = !charsShown1;
+			}
+			
+		});
+		showHidePassword_1.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		showHidePassword_1.setBackground(Color.WHITE);
+		showHidePassword_1.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
+		showHidePassword_1.setHorizontalAlignment(SwingConstants.CENTER);
+		showHidePassword_1.setBounds(329, 46, 33, 19);
+		contentPane.add(showHidePassword_1);
 		
 		JLabel lblNewLabel = new JLabel("Username:");
 		lblNewLabel.setBounds(10, 11, 80, 22);
@@ -63,25 +108,37 @@ public class Register extends JFrame {
 		
 		passwordField = new JPasswordField();
 		passwordField.setBounds(148, 44, 180, 22);
+		passwordField.setEchoChar('*');
 		contentPane.add(passwordField);
+		
 		
 		JButton registerButton = new JButton("Register");
 		registerButton.addActionListener(e -> {
 			
-			JOptionPane.showMessageDialog(null, "Registered successfuly!");
-			passwordField.setText("");
-			repeatPasswordField.setText("");
-			emailTextField.setText("");
-			usernameTextField.setText("");
-			Login f = new Login();
-			f.setResizable(false);
-			f.setTitle("Log in");
-			f.setLocationRelativeTo(null);
-			f.setVisible(true);
-			this.setVisible(false);
+			if(!usernameTextField.getText().isEmpty() && !(passwordField.getPassword().length==0) && !(repeatPasswordField.getPassword().length==0))
+				
+				if(passwordField.getPassword().equals(repeatPasswordField.getPassword())) {
+				
+				JOptionPane.showMessageDialog(null, "Registered successfuly!");
+				passwordField.setText("");
+				repeatPasswordField.setText("");
+				usernameTextField.setText("");
+				Login f = new Login();
+				f.setResizable(false);
+				f.setTitle("Log in");
+				f.setLocationRelativeTo(null);
+				f.setVisible(true);
+				this.setVisible(false);
+				
+				}
+				else 
+					JOptionPane.showMessageDialog(null, "Password missmatch!");
+				else 
+					JOptionPane.showMessageDialog(null, "Please fill out all fields!");
+
 			
 		});
-		registerButton.setBounds(10, 188, 101, 23);
+		registerButton.setBounds(10, 165, 101, 23);
 		registerButton.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
 		contentPane.add(registerButton);
 		
@@ -90,7 +147,6 @@ public class Register extends JFrame {
 			
 			passwordField.setText("");
 			repeatPasswordField.setText("");
-			emailTextField.setText("");
 			usernameTextField.setText("");
 			Login f = new Login();
 			f.setResizable(false);
@@ -100,19 +156,9 @@ public class Register extends JFrame {
 			this.setVisible(false);
 			
 		});
-		logInButton.setBounds(185, 188, 143, 23);
+		logInButton.setBounds(219, 165, 143, 23);
 		logInButton.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
 		contentPane.add(logInButton);
-		
-		emailTextField = new JTextField();
-		emailTextField.setBounds(148, 110, 180, 22);
-		emailTextField.setColumns(10);
-		contentPane.add(emailTextField);
-		
-		JLabel lblNewLabel_1_1_1 = new JLabel("E-mail:");
-		lblNewLabel_1_1_1.setBounds(10, 110, 80, 22);
-		lblNewLabel_1_1_1.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
-		contentPane.add(lblNewLabel_1_1_1);
 		
 		JLabel lblRepeatPassword = new JLabel("Repeat password:");
 		lblRepeatPassword.setBounds(10, 77, 151, 22);
@@ -120,6 +166,7 @@ public class Register extends JFrame {
 		contentPane.add(lblRepeatPassword);
 		
 		repeatPasswordField = new JPasswordField();
+		repeatPasswordField.setEchoChar('*');
 		repeatPasswordField.setBounds(148, 77, 180, 22);
 		contentPane.add(repeatPasswordField);
 		
