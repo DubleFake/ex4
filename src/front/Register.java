@@ -7,6 +7,10 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import back.ProfileManager;
+import back.Tools;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -117,8 +121,9 @@ public class Register extends JFrame {
 			
 			if(!usernameTextField.getText().isEmpty() && !(passwordField.getPassword().length==0) && !(repeatPasswordField.getPassword().length==0))
 				
-				if(passwordField.getPassword().equals(repeatPasswordField.getPassword())) {
+				if(Tools.stringBuilder(passwordField.getPassword()).equals(Tools.stringBuilder(repeatPasswordField.getPassword()))) {
 				
+				ProfileManager.addUser(usernameTextField.getText(), Tools.stringBuilder(passwordField.getPassword()));
 				JOptionPane.showMessageDialog(null, "Registered successfuly!");
 				passwordField.setText("");
 				repeatPasswordField.setText("");

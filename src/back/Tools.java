@@ -29,4 +29,13 @@ public class Tools {
 		
 	}
 	
+	public static final String hidePassword(String password) {
+		
+		StringBuilder hidden = new StringBuilder();
+		for(int x = 0;x<password.length();x++)
+			hidden.append("*");
+		return hidden.toString();
+		
+	}
+	
 }

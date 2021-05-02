@@ -32,15 +32,15 @@ public class Security {
 		
 	}
 	
-	public static void encrypt(InputStream is, OutputStream os) throws Throwable {
+	public static void encryptFile(InputStream is, OutputStream os) throws Throwable {
 		encryptOrDecrypt(secret, Cipher.ENCRYPT_MODE, is, os);
 	}
 
-	public static void decrypt(InputStream is, OutputStream os) throws Throwable {
+	public static void decryptFile(InputStream is, OutputStream os) throws Throwable {
 		encryptOrDecrypt(secret, Cipher.DECRYPT_MODE, is, os);
 	}
 
-	public static void encryptOrDecrypt(String key, int mode, InputStream is, OutputStream os) throws Throwable {
+	private static void encryptOrDecrypt(String key, int mode, InputStream is, OutputStream os) throws Throwable {
 
 		DESKeySpec dks = new DESKeySpec(key.getBytes());
 		SecretKeyFactory skf = SecretKeyFactory.getInstance("DES");
@@ -121,7 +121,7 @@ public class Security {
 	
 	private static final SecretKeySpec createSecretKey(char[] secret, byte[] salt2, int iterationCount, int keyLength) throws Exception {
 		
-		SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBKDFWithHmacSHA512");
+		SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
 		PBEKeySpec keySpec = new PBEKeySpec(secret, salt2, iterationCount, keyLength);
 		SecretKey keyTmp = keyFactory.generateSecret(keySpec);
 		return new SecretKeySpec(keyTmp.getEncoded(), "AES");

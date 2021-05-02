@@ -36,6 +36,8 @@ public class Login extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					Thread t= new Thread(()->{ProfileManager.createProfilesFile();});
+					t.start();
 					frame = new Login();
 					frame.setTitle("Log in");
 					frame.setResizable(false);
@@ -142,7 +144,7 @@ public class Login extends JFrame {
 				f.setResizable(false);
 				f.setLocationRelativeTo(null);
 				f.setVisible(true);
-				toggleVisibility(false);
+				setVisible(false);
 				
 			}
 		});
@@ -160,7 +162,7 @@ public class Login extends JFrame {
 			f.setLocationRelativeTo(null);
 			f.setResizable(false);
 			f.setVisible(true);
-			toggleVisibility(false);
+			setVisible(false);
 			}else {
 				
 				JOptionPane.showMessageDialog(null, "Username or password is incorrect.");
@@ -171,10 +173,5 @@ public class Login extends JFrame {
 		logInButton.setFont(new Font("Trebuchet MS", Font.PLAIN, 12));
 		logInButton.setBounds(102, 116, 99, 23);
 		contentPane.add(logInButton);
-	}
-	
-	private void toggleVisibility(Boolean b) {
-		
-		this.setVisible(b);
 	}	
 }

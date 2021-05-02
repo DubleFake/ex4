@@ -124,8 +124,19 @@ public class AddPassword extends JFrame {
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				if(!titleTextField.getText().isEmpty() && !usernameTextField.getText().isEmpty() && !(passwordField.getPassword().length == 0) && !urlTextField.getText().isEmpty())
-					VaultManager.addRecord(titleTextField.getText(), usernameTextField.getText(), Tools.stringBuilder(passwordField.getPassword()), urlTextField.getText());
+				if(!titleTextField.getText().isEmpty() && !usernameTextField.getText().isEmpty() && !(passwordField.getPassword().length == 0) && !urlTextField.getText().isEmpty()) {
+					Thread t = new Thread(()->{VaultManager.addRecord(titleTextField.getText(), usernameTextField.getText(), Tools.stringBuilder(passwordField.getPassword()), urlTextField.getText());});
+					t.start();
+					JOptionPane.showMessageDialog(null, "Record added.");
+					Main.toogleWindowOpenStatus(false);
+					try {
+						t.join();
+					} catch (InterruptedException e1) {
+						e1.printStackTrace();
+					}
+					Main.updateTable();
+					dispose();
+				}
 				else
 					JOptionPane.showMessageDialog(null, "Please fill out all fields!");
 				
@@ -149,10 +160,17 @@ public class AddPassword extends JFrame {
 		cancelButton.setBounds(547, 629, 116, 31);
 		contentPane.add(cancelButton);
 		
-		JButton btnGenerateRandom = new JButton("Generate random");
-		btnGenerateRandom.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
-		btnGenerateRandom.setBounds(467, 392, 196, 31);
-		contentPane.add(btnGenerateRandom);
+		JButton generatePasswordButton = new JButton("Generate random");
+		generatePasswordButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				passwordField.setText(Tools.generateRandomPassword());
+				
+			}
+		});
+		generatePasswordButton.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
+		generatePasswordButton.setBounds(467, 392, 196, 31);
+		contentPane.add(generatePasswordButton);
 	}
 	
 	private void close() {

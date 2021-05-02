@@ -38,13 +38,14 @@ public class ProfileManager {
 			
 			String[] details = line.split("\\s");
 			
-			if(username.equals(details[0]) && password.equals(details[1])) {
+			if(details[0].equals(Security.hash(username)) && details[1].equals(Security.hash(password))) {
 				
 				File personal = new File("vault/" + username + ".profile");
+				VaultManager.setUsername(Security.hash(username));
 				
 				if(personal.exists()) {
 					
-					Security.decrypt(new FileInputStream("vault/"+username+".profile"), new FileOutputStream("C:/Users/DUBLEF~1/AppData/Local/Temp/profile.txt"));
+					Security.decryptFile(new FileInputStream("vault/"+Security.hash(username)+".profile"), new FileOutputStream("C:/Users/DUBLEF~1/AppData/Local/Temp/profile.txt"));
 					
 				}else {
 					
@@ -63,13 +64,18 @@ public class ProfileManager {
 		}catch(Exception ex) {
 			
 			ex.printStackTrace();
+			return false;
+			
 			
 			
 		} catch (Throwable e) {
 			
 			e.printStackTrace();
+			return false;
+			
 		}
-		return true;
+		return false;
+		
 		
 	}
 	
@@ -78,7 +84,7 @@ public class ProfileManager {
 		try {
 			
 			FileWriter fw = new FileWriter(profiles, true);
-			fw.append(Security.hash(Username) + Security.hash(Password) + "\n");
+			fw.append(Security.hash(Username) + " " + Security.hash(Password) + "\n");
 			fw.close();
 			
 		} catch (IOException e) {
