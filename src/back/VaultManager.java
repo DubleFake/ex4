@@ -57,8 +57,8 @@ public class VaultManager {
 	public static void saveProfile() {
 		
 		try {
-			Security.encryptFile(new FileInputStream("C:/Users/DUBLEF~1/AppData/Local/Temp/profile.txt"), new FileOutputStream("vault/"+Security.hash(username)+".profile"));
-			//personal.delete();
+			Security.encryptFile(new FileInputStream(personal), new FileOutputStream("vault/"+username+".profile"));
+			personal.delete();
 			
 		} catch (FileNotFoundException e) {
 			

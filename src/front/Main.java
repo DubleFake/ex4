@@ -20,8 +20,10 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionListener;
 
 import back.Tools;
 import back.VaultManager;
@@ -34,7 +36,10 @@ public class Main extends JFrame {
 	private JTextField passwordSearchField;
 	private static JList<String> list = new JList<>();
 	private static DefaultListModel<String> model= new DefaultListModel<>();
-
+	private static List<String> updatedData = new ArrayList<>();
+	private static List<String> showableData = new ArrayList<>();
+	private static boolean isFiltered = false;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -167,14 +172,19 @@ public class Main extends JFrame {
 				List<String> result = new ArrayList<>();
 				
 				if(passwordSearchField.getText().isEmpty() || passwordSearchField.getForeground().equals(Color.GRAY))
-					resetTable();
+					updateTable();
 				else {
+					showableData.clear();
+					updatedData.clear();
 				for(String s: data) {
 					
 					String []temp = s.split("\\s+");
 					
-					if(Pattern.compile(Pattern.quote(passwordSearchField.getText()), Pattern.CASE_INSENSITIVE).matcher(temp[0]).find())
+					if(Pattern.compile(Pattern.quote(passwordSearchField.getText()), Pattern.CASE_INSENSITIVE).matcher(temp[0]).find()) {
+						updatedData.add(s);
 						result.add(temp[0] + "                    " + temp[1] + "                    " + Tools.hidePassword(temp[2]) + "                    " + temp[3]);
+						isFiltered = true;
+					}
 					else
 						continue;
 					
@@ -190,7 +200,49 @@ public class Main extends JFrame {
 		searchButton.setBounds(646, 101, 123, 31);
 		contentPane.add(searchButton);
 		
+		list.getSelectionModel().addListSelectionListener(e->{
+			
+			ListSelectionModel lsm = (ListSelectionModel)e.getSource();
+			
+			if(!lsm.isSelectionEmpty()) {
+			
+			String p = list.getSelectedValue();
+			String[] args = p.split("\\s+");
+			List<String> result = new ArrayList<>();
+			
+			if(!isFiltered)
+			for(String s: data) {
+				
+				String[] details = s.split("\\s+");
+				
+				if(details[0].equals(args[0])) 
+					if(!args[2].equals(details[2])) 
+						result.add(args[0] + "                    " + args[1]+"                    "+details[2]+"                    "+args[3]);
+					else
+						result.add(args[0] + "                    "+args[1]+"                    "+Tools.hidePassword(args[2])+"                    "+args[3]);
+				else 
+					result.add(details[0] + "                    " + details[1]+"                    "+Tools.hidePassword(details[2])+"                    "+details[3]);
+			}
+			else
+				for(String s: updatedData) {
+					
+					String []details = s.split("\\s+");
+					
+					if(details[0].equals(args[0]))
+						if(!args[2].equals(details[2]))
+							result.add(args[0] + "                    " + args[1]+"                    "+details[2]+"                    "+args[3]);
+						else
+							result.add(args[0] + "                    "+args[1]+"                    "+Tools.hidePassword(args[2])+"                    "+args[3]);
+					else
+						result.add(details[0] + "                    "+details[1]+"                    "+Tools.hidePassword(details[2])+"                    "+details[3]);
+					
+				}
+			setCustomTable(result);
+			}
+			
+		});
 
+		
 	}
 	
 	public static void toogleWindowOpenStatus(boolean b) {
@@ -203,6 +255,9 @@ public class Main extends JFrame {
 		
 		try {
 			
+			showableData.clear();
+			updatedData.clear();
+			isFiltered = false;
 			Thread t = new Thread(()->{data=VaultManager.loadProfile();});
 			t.start();
 			model.removeAllElements();
@@ -211,7 +266,7 @@ public class Main extends JFrame {
 			for(String s: data) {
 				
 				String []temp = s.split("\\s+");
-				model.addElement(temp[0] + "                    " + temp[1] +"                    " + Tools.hidePassword(temp[2]) + "                   " + temp[3]);
+				model.addElement(temp[0] + "                    " + temp[1] +"                    " + Tools.hidePassword(temp[2]) + "                    " + temp[3]);
 				
 			}
 			
@@ -227,21 +282,9 @@ public class Main extends JFrame {
 	
 	private static void setCustomTable(List<String> s) {
 		
+		showableData = s;
 		model.removeAllElements();
 		model.addAll(s);
-		list.setModel(model);
-		
-	}
-	
-	private static void resetTable() {
-		
-		model.removeAllElements();
-		for(String s: data) {
-			
-			String []temp = s.split("\\s+");
-			model.addElement(temp[0] + "                    " + temp[1] +"                    " + Tools.hidePassword(temp[2]) + "                   " + temp[3]);
-			
-		}
 		list.setModel(model);
 		
 	}

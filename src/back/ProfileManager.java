@@ -40,7 +40,7 @@ public class ProfileManager {
 			
 			if(details[0].equals(Security.hash(username)) && details[1].equals(Security.hash(password))) {
 				
-				File personal = new File("vault/" + username + ".profile");
+				File personal = new File("vault/" + Security.hash(username) + ".profile");
 				VaultManager.setUsername(Security.hash(username));
 				
 				if(personal.exists()) {
