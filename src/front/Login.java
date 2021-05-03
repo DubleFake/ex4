@@ -16,9 +16,13 @@ import javax.swing.border.EmptyBorder;
 
 import back.ProfileManager;
 import back.Tools;
+import back.VaultManager;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 import javax.swing.JButton;
 
 public class Login extends JFrame {
@@ -163,6 +167,15 @@ public class Login extends JFrame {
 			f.setResizable(false);
 			f.setVisible(true);
 			setVisible(false);
+			f.addWindowListener(new WindowAdapter() {
+				
+				public void windowClosing(WindowEvent e) {
+					
+					VaultManager.saveProfile();
+					
+				}
+				
+			});
 			}else {
 				
 				JOptionPane.showMessageDialog(null, "Username or password is incorrect.");

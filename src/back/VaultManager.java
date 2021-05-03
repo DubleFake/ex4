@@ -78,4 +78,90 @@ public class VaultManager {
 		
 	}
 	
+	public static void editEntry(String entry, String changed) {
+		
+		try {
+		
+		List<String> result = new ArrayList<>();
+		FileReader fr = new FileReader(personal);
+		BufferedReader br = new BufferedReader(fr);
+		String line;
+		while((line=br.readLine())!=null) {
+			
+			String []details = line.split("\\s+");
+			String record = details[0] + " " + details[1] + " " +Tools.hidePassword(Security.decryptText(details[2])) + " " + details[3];
+			details = entry.split("\\s+");
+			String target = details[0] + " " + details[1] + " " + details[2] + " " + details[3];
+			
+			if(record.equals(target)) {
+				
+				String[] newData = changed.split("\\s+");
+				result.add(newData[0] + " " + newData[1] + " " + Security.encryptText(newData[2]) + " " + newData[3] + "\n");
+				
+			}else 
+				result.add(line + "\n");
+			
+		}
+		br.close();
+		
+		FileWriter fw = new FileWriter(personal);
+		personal.delete();
+		personal.createNewFile();
+		for(String s: result) {
+			
+			fw.append(s);
+			
+		}
+		
+		fw.close();
+		
+		}catch(Exception ex) {
+			
+			ex.printStackTrace();
+			
+		}
+		
+	}
+	
+	public static void deleteEntry(String entry) {
+		
+		try {
+			
+			List<String> result = new ArrayList<>();
+			FileReader fr = new FileReader(personal);
+			BufferedReader br = new BufferedReader(fr);
+			String line;
+
+			String []s = entry.split("\\s+");
+			String target = s[0] + " " + s[1] + " " + s[2] + " " + s[3];
+			while((line=br.readLine())!=null) {
+				
+				s = line.split("\\s+");
+				String record = s[0] + " " + s[1] + " " +Tools.hidePassword(Security.decryptText(s[2])) + " " + s[3];
+
+				
+				if(!record.equals(target))
+					result.add(s[0] + " " + s[1] + " " + s[2] +" "+ s[3]+ "\n");
+			}
+			br.close();
+			
+			FileWriter fw = new FileWriter(personal);
+			personal.delete();
+			personal.createNewFile();
+			for(String p: result) {
+				
+				fw.append(p);
+				
+			}
+			
+			fw.close();
+			
+		}catch(Exception ex) {
+			
+			ex.printStackTrace();
+			
+		}
+		
+	}
+	
 }

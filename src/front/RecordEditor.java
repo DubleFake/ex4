@@ -22,7 +22,7 @@ import javax.swing.border.EmptyBorder;
 import back.Tools;
 import back.VaultManager;
 
-public class AddPassword extends JFrame {
+public class RecordEditor extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField titleTextField;
@@ -31,18 +31,22 @@ public class AddPassword extends JFrame {
 	private JTextField urlTextField;
 	private boolean charsShown = false;
 
+	private static String[] data;
+	
 	/**
 	 * Create the frame.
 	 * @return 
 	 */
 	
-	public AddPassword() {
+	public RecordEditor(String record) {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 689, 710);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		
+		data = record.split("\\s+");
 		
 		JLabel showHidePassword = new JLabel("v-v");
 		showHidePassword.addMouseListener(new MouseAdapter() {
@@ -70,7 +74,7 @@ public class AddPassword extends JFrame {
 		showHidePassword.setBounds(424, 390, 33, 36);
 		contentPane.add(showHidePassword);
 		
-		JLabel addPasswordLabel = new JLabel("Adding a password");
+		JLabel addPasswordLabel = new JLabel("Editing record");
 		addPasswordLabel.setFont(new Font("Trebuchet MS", Font.PLAIN, 25));
 		addPasswordLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		addPasswordLabel.setBounds(10, 11, 601, 46);
@@ -96,39 +100,39 @@ public class AddPassword extends JFrame {
 		urlLabel.setBounds(10, 523, 91, 31);
 		contentPane.add(urlLabel);
 		
-		titleTextField = new JTextField();
+		titleTextField = new JTextField(data[0]);
 		titleTextField.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
 		titleTextField.setBounds(10, 135, 447, 31);
 		contentPane.add(titleTextField);
 		titleTextField.setColumns(10);
 		
-		usernameTextField = new JTextField();
+		usernameTextField = new JTextField(data[1]);
 		usernameTextField.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
 		usernameTextField.setColumns(10);
 		usernameTextField.setBounds(10, 290, 447, 31);
 		contentPane.add(usernameTextField);
 		
-		passwordField = new JPasswordField();
+		passwordField = new JPasswordField(data[2]);
 		passwordField.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
 		passwordField.setBounds(10, 390, 416, 36);
 		passwordField.setEchoChar('*');
 		contentPane.add(passwordField);
 		
-		urlTextField = new JTextField();
+		urlTextField = new JTextField(data[3]);
 		urlTextField.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
 		urlTextField.setColumns(10);
 		urlTextField.setBounds(10, 565, 447, 31);
 		contentPane.add(urlTextField);
 		
-		JButton addButton = new JButton("Add");
+		JButton addButton = new JButton("Update");
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
 				if(!titleTextField.getText().isEmpty() && !usernameTextField.getText().isEmpty() && !(passwordField.getPassword().length == 0) && !urlTextField.getText().isEmpty()) {
-					Thread t = new Thread(()->{VaultManager.addRecord(titleTextField.getText(), usernameTextField.getText(), Tools.stringBuilder(passwordField.getPassword()), urlTextField.getText());});
+					Thread t = new Thread(()->{VaultManager.editEntry(record, new String(titleTextField.getText() + " " + usernameTextField.getText() + " " + Tools.stringBuilder(passwordField.getPassword()) + " " +  urlTextField.getText()));});
 					t.start();
-					JOptionPane.showMessageDialog(null, "Record added.");
-					Main.toogleAddPasswordWindow(false);
+					JOptionPane.showMessageDialog(null, "Record updated.");
+					Main.toogleEditPasswordWindow(false);
 					try {
 						t.join();
 					} catch (InterruptedException e1) {
@@ -150,7 +154,7 @@ public class AddPassword extends JFrame {
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				Main.toogleAddPasswordWindow(false);
+				Main.toogleEditPasswordWindow(false);
 				dispose();
 				
 				

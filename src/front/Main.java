@@ -2,10 +2,15 @@ package front;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -17,13 +22,14 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ListSelectionListener;
 
 import back.Tools;
 import back.VaultManager;
@@ -32,6 +38,8 @@ public class Main extends JFrame {
 
 	private JPanel contentPane;
 	private static boolean isPasswordWindowOpen = false;
+	private static boolean isEditPasswordWindowOpen  = false;
+	private static boolean isDeletePasswordWindowOpen  = false;
 	private static List<String> data = new ArrayList<>();
 	private JTextField passwordSearchField;
 	private static JList<String> list = new JList<>();
@@ -86,15 +94,66 @@ public class Main extends JFrame {
 		scrollPane.setViewportView(list);
 		updateTable();
 		
-		JButton btnNewButton = new JButton("Delete password");
-		btnNewButton.setBounds(482, 321, 138, 23);
-		btnNewButton.setFont(new Font("Trebuchet MS", Font.PLAIN, 12));
-		contentPane.add(btnNewButton);
+		JButton deletePasswordButton = new JButton("Delete password");
+		deletePasswordButton.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				
+				if(!isDeletePasswordWindowOpen) {
+					
+					PasswordDeletion f = new PasswordDeletion(data);
+					f.addWindowListener(new WindowAdapter() {
+						
+						public void windowClosing(WindowEvent e) {
+							
+							Main.toogleDeletePasswordWindow(false);
+							
+						}
+						
+					});
+					f.setTitle("Edit record");
+					f.setResizable(false);
+					f.setLocationRelativeTo(null);
+					f.setVisible(true);
+					isEditPasswordWindowOpen = true;
+					
+				}
+				
+			}
+			
+		});
+		deletePasswordButton.setBounds(482, 321, 138, 23);
+		deletePasswordButton.setFont(new Font("Trebuchet MS", Font.PLAIN, 12));
+		contentPane.add(deletePasswordButton);
 		
-		JButton btnClearPasswords = new JButton("Clear password list");
-		btnClearPasswords.setBounds(630, 321, 144, 23);
-		btnClearPasswords.setFont(new Font("Trebuchet MS", Font.PLAIN, 12));
-		contentPane.add(btnClearPasswords);
+		JButton editPasswordButton = new JButton("Edit password");
+		editPasswordButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				if(!isEditPasswordWindowOpen) {
+					
+					EditPassword f = new EditPassword(data);
+					f.addWindowListener(new WindowAdapter() {
+						
+						public void windowClosing(WindowEvent e) {
+							
+							Main.toogleEditPasswordWindow(false);
+							
+						}
+						
+					});
+					f.setTitle("Edit record");
+					f.setResizable(false);
+					f.setLocationRelativeTo(null);
+					f.setVisible(true);
+					isEditPasswordWindowOpen = true;
+				}
+				
+			}
+		});
+		editPasswordButton.setBounds(630, 321, 144, 23);
+		editPasswordButton.setFont(new Font("Trebuchet MS", Font.PLAIN, 12));
+		contentPane.add(editPasswordButton);
 		
 		JButton addPasswordButton = new JButton("Add password");
 		addPasswordButton.addActionListener(new ActionListener() {
@@ -107,7 +166,7 @@ public class Main extends JFrame {
 						
 						public void windowClosing(WindowEvent e) {
 							
-							Main.toogleWindowOpenStatus(false);
+							Main.toogleAddPasswordWindow(false);
 							
 						}
 						
@@ -242,14 +301,61 @@ public class Main extends JFrame {
 			
 		});
 
+		list.addMouseListener(new MouseAdapter() {
+			
+			public void mousePressed(MouseEvent e) {
+				
+				if(SwingUtilities.isRightMouseButton(e)) {
+					
+		            JList<String> list = (JList<String>)e.getSource();
+		            int row = list.locationToIndex(e.getPoint());
+		            
+		            String []s = model.get(row).split("\\s+");
+		            String target = s[0] + " " +s[1] + " " + s[2] + " " + s[3];
+		            
+		            for(String d: data) {
+		            	
+		            	s = d.split("\\s+");
+		            	String record = s[0] + " " + s[1] + " " + Tools.hidePassword(s[2]) + " " + s[3];
+		            	if(record.equals(target)) {
+		            		
+				            StringSelection stringSelection = new StringSelection(s[2]);
+				            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+				            clipboard.setContents(stringSelection, null);
+							JOptionPane.showMessageDialog(null, "Password copied.");
+							break;
+		            		
+		            	}
+		            	
+		            }
+					
+				}
+				
+			}
+			
+		});
 		
 	}
 	
-	public static void toogleWindowOpenStatus(boolean b) {
+	public static void toogleAddPasswordWindow(boolean b) {
 		
 			isPasswordWindowOpen = b;
 		
 	}
+	
+	public static void toogleEditPasswordWindow(boolean b) {
+		
+		isEditPasswordWindowOpen = b;
+	
+}
+	
+	public static void toogleDeletePasswordWindow(boolean b) {
+		
+		isDeletePasswordWindowOpen = b;
+		
+}
+	
+	
 	
 	public static void updateTable() {
 		
