@@ -15,6 +15,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -106,11 +108,33 @@ public class Register extends JFrame {
 		contentPane.add(lblPassword);
 		
 		usernameTextField = new JTextField();
+		usernameTextField.addKeyListener(new KeyAdapter() {
+			
+			public void keyTyped(KeyEvent e) {
+				
+				char c = e.getKeyChar();
+				if(c == KeyEvent.VK_SPACE)
+					e.consume();
+				
+			}
+			
+		});
 		usernameTextField.setBounds(148, 11, 180, 22);
 		contentPane.add(usernameTextField);
 		usernameTextField.setColumns(10);
 		
 		passwordField = new JPasswordField();
+		passwordField.addKeyListener(new KeyAdapter() {
+			
+			public void keyTyped(KeyEvent e) {
+				
+				char c = e.getKeyChar();
+				if(c == KeyEvent.VK_SPACE)
+					e.consume();
+				
+			}
+			
+		});
 		passwordField.setBounds(148, 44, 180, 22);
 		passwordField.setEchoChar('*');
 		contentPane.add(passwordField);
@@ -171,6 +195,17 @@ public class Register extends JFrame {
 		contentPane.add(lblRepeatPassword);
 		
 		repeatPasswordField = new JPasswordField();
+		repeatPasswordField.addKeyListener(new KeyAdapter() {
+			
+			public void keyTyped(KeyEvent e) {
+				
+				char c = e.getKeyChar();
+				if(c == KeyEvent.VK_SPACE)
+					e.consume();
+				
+			}
+			
+		});
 		repeatPasswordField.setEchoChar('*');
 		repeatPasswordField.setBounds(148, 77, 180, 22);
 		contentPane.add(repeatPasswordField);

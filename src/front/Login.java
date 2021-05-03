@@ -18,6 +18,8 @@ import back.ProfileManager;
 import back.Tools;
 import back.VaultManager;
 
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -109,12 +111,34 @@ public class Login extends JFrame {
 		contentPane.add(passwordLabel);
 		
 		usernameTextField = new JTextField();
+		usernameTextField.addKeyListener(new KeyAdapter() {
+			
+			public void keyTyped(KeyEvent e) {
+				
+				char c = e.getKeyChar();
+				if(c == KeyEvent.VK_SPACE)
+					e.consume();
+				
+			}
+			
+		});
 		usernameTextField.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
 		usernameTextField.setBounds(102, 52, 189, 19);
 		contentPane.add(usernameTextField);
 		usernameTextField.setColumns(10);
 		
 		passwordField = new JPasswordField();
+		passwordField.addKeyListener(new KeyAdapter() {
+			
+			public void keyTyped(KeyEvent e) {
+				
+				char c = e.getKeyChar();
+				if(c == KeyEvent.VK_SPACE)
+					e.consume();
+				
+			}
+			
+		});
 		passwordField.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
 		passwordField.setColumns(10);
 		passwordField.setBounds(102, 82, 189, 19);

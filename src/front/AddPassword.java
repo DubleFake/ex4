@@ -2,10 +2,11 @@ package front;
 
 import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -97,24 +98,68 @@ public class AddPassword extends JFrame {
 		contentPane.add(urlLabel);
 		
 		titleTextField = new JTextField();
+		titleTextField.addKeyListener(new KeyAdapter() {
+			
+			public void keyTyped(KeyEvent e) {
+				
+				char c = e.getKeyChar();
+				if(c == KeyEvent.VK_SPACE)
+					e.consume();
+				
+			}
+			
+		});
 		titleTextField.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
 		titleTextField.setBounds(10, 135, 447, 31);
 		contentPane.add(titleTextField);
 		titleTextField.setColumns(10);
 		
 		usernameTextField = new JTextField();
+		usernameTextField.addKeyListener(new KeyAdapter() {
+			
+			public void keyTyped(KeyEvent e) {
+				
+				char c = e.getKeyChar();
+				if(c == KeyEvent.VK_SPACE)
+					e.consume();
+				
+			}
+			
+		});
 		usernameTextField.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
 		usernameTextField.setColumns(10);
 		usernameTextField.setBounds(10, 290, 447, 31);
 		contentPane.add(usernameTextField);
 		
 		passwordField = new JPasswordField();
+		passwordField.addKeyListener(new KeyAdapter() {
+			
+			public void keyTyped(KeyEvent e) {
+				
+				char c = e.getKeyChar();
+				if(c == KeyEvent.VK_SPACE)
+					e.consume();
+				
+			}
+			
+		});
 		passwordField.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
 		passwordField.setBounds(10, 390, 416, 36);
 		passwordField.setEchoChar('*');
 		contentPane.add(passwordField);
 		
 		urlTextField = new JTextField();
+		urlTextField.addKeyListener(new KeyAdapter() {
+			
+			public void keyTyped(KeyEvent e) {
+				
+				char c = e.getKeyChar();
+				if(c == KeyEvent.VK_SPACE)
+					e.consume();
+				
+			}
+			
+		});
 		urlTextField.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
 		urlTextField.setColumns(10);
 		urlTextField.setBounds(10, 565, 447, 31);

@@ -36,7 +36,7 @@ public class ProfileManager {
 		String line;
 		while((line=br.readLine())!=null) {
 			
-			String[] details = line.split("\\s");
+			String[] details = line.split("\\s+");
 			
 			if(details[0].equals(Security.hash(username)) && details[1].equals(Security.hash(password))) {
 				

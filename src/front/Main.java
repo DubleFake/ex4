@@ -375,7 +375,6 @@ public class Main extends JFrame {
 				model.addElement(temp[0] + "                    " + temp[1] +"                    " + Tools.hidePassword(temp[2]) + "                    " + temp[3]);
 				
 			}
-			
 			list.setModel(model);
 			
 		} catch (InterruptedException e) {
